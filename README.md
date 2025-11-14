@@ -1,7 +1,6 @@
 #  Proyecto 1: Analizador Léxico Avanzado (AFD Manual)
 
-- Support Standard Markdown / CommonMark and GFM(GitHub Flavored Markdown);
-- Markdown Extras : Support ToC (Table of Contents), Emoji, Task lists, @Links...;
+## Autores
 
 
 <div align="center">
