@@ -44,10 +44,11 @@
 - [Lógica del Desafío](#lógica-del-desafío)
 - [Instrucciones de Uso](#instrucciones-de-uso)
 - [Resultados de Prueba](#resultados-de-prueba)
+- [Bibliografia](#bibliografia)
 
 # Introducción
 <p>
-El presente proyecto implementa un analizador léxico para expresiones aritméticas, desarrollado en Python y basado estrictamente en un Autómata Finito Determinista (AFD) diseñado manualmente. El objetivo es recorrer una cadena de entrada carácter por carácter, identificar secuencias válidas y clasificarlas en tokens, cada uno compuesto por un tipo y su lexema correspondiente.
+El presente proyecto implementa un analizador léxico para expresiones aritméticas, desarrollado en C y basado estrictamente en un Autómata Finito Determinista (AFD) diseñado manualmente. El objetivo es recorrer una cadena de entrada carácter por carácter, identificar secuencias válidas y clasificarlas en tokens, cada uno compuesto por un tipo y su lexema correspondiente.
 
 El analizador reconoce números enteros, números decimales en sus diversas formas, operadores aritméticos, paréntesis y símbolos no válidos que deben producir errores léxicos. Uno de los requerimientos principales del proyecto es la correcta distinción entre el operador de resta y el operador de negación, lo cual se determina en función del contexto de aparición dentro de la expresión.
 
@@ -114,4 +115,39 @@ El AFD se compone de los siguientes estados. Los estados 1, 3, 4, 5, 6, 7, 8, 9 
 # Lógica del Desafío
 # Instrucciones de Uso
 # Resultados de Prueba
+```
+Analizando expresión: "2.5 + -3 * (-10.5) / (5 - 3)"
+(NUMERO_DECIMAL, 2.5)
+(OP_BINARIO_SUMA, +)
+(OP_UNARIO_NEG, -)
+(NUMERO_ENTERO, 3)
+(OP_MULT, *)
+(PAREN_ABRE, ()
+(OP_UNARIO_NEG, -)
+(NUMERO_DECIMAL, 10.5)
+(PAREN_CIERRA, ))
+(OP_DIV, /)
+(PAREN_ABRE, ()
+(NUMERO_ENTERO, 5)
+(OP_BINARIO_RESTA, -)
+(NUMERO_ENTERO, 3)
+(PAREN_CIERRA, ))
+(FIN_CADENA, EOF)
+```
+
+```
+Analizando expresión: "5$ + 1 + 4.1.2"
+(NUMERO_ENTERO, 5)
+(ERROR_LEXICO, $)
+(OP_BINARIO_SUMA, +)
+(NUMERO_ENTERO, 1)
+(OP_BINARIO_SUMA, +)
+(NUMERO_DECIMAL, 4.1)
+(ERROR_LEXICO, .)
+(NUMERO_ENTERO, 2)
+(FIN_CADENA, EOF)
+```
+## Bibliografia
+- https://doi.org/10.37376/asj.vi3.953 Modelo AFD
+- https://www.ijariit.com/manuscripts/v8i1/V8I1-1238.pdf Modelo AFD
 
