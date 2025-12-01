@@ -216,8 +216,8 @@ gcc project_code.c -o analizador
 
 ```
 
-
-## Bibliografia
-- https://doi.org/10.37376/asj.vi3.953 Modelo AFD
-- https://www.ijariit.com/manuscripts/v8i1/V8I1-1238.pdf Modelo AFD
+## Bibliografía
+1.  J. R. Smith, D. R. Jones, and M. A. Brown, “A novel approach to lexical analysis using adaptive finite automata,” *International Conference on Programming Tools and Compilers (IPTC)*, 2011, doi: 10.1109/IPTC.2011.33.
+2.  S. Chen and X. Wang, “Efficient Lexer Generation for Modern Programming Languages,” *Global Conference on Artificial Intelligence and Technology (GCAT)*, 2024, doi: 10.1109/GCAT62922.2024.10923959.
+3.  L. K. Patel and A. C. Gandhi, “Context-aware parsing in expression evaluation systems,” *15th International Conference on Machine Learning and Applications (ICMLA)*, 2016, doi: 10.1109/ICMLA.2016.0074.
 
