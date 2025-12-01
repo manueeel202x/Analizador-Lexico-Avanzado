@@ -69,19 +69,19 @@ Además del código fuente, el proyecto incluye el diseño del AFD, su descripci
 
 
 
-## Diseño del AFD
+# Diseño del AFD
 El diseño del Autómata Finito Determinista fue realizado en el programa `JFLAP`.
 A continuación, se presenta el diagrama de estados:
 
 ![DiagramaDeEstados](https://github.com/manueeel202x/Analizador-Lexico-Avanzado/blob/main/AFD.png)
 
-### Tabla de Transiciones 
+## Tabla de Transiciones 
 
 La siguiente matriz detalla las transiciones de cada estado $(Q)$ con cada símbolo del alfabeto $(\Sigma)$.
 
 ![TablaDeTransiciones](https://github.com/manueeel202x/Analizador-Lexico-Avanzado/blob/main/tabla_de_transiciones.png)
 
-### Estados y Alfabeto
+## Estados y Alfabeto
 
 #### Alfabeto de Entrada ($\Sigma$)
 
@@ -110,43 +110,113 @@ El AFD se compone de los siguientes estados. Los estados 1, 3, 4, 5, 6, 7, 8, 9 
 | **9** | **Transición para ')'.** Reconoce el paréntesis de cierre. | `PAREN_CIERRA` |
 | **10** | **Estado de Error Léxico.** Se alcanza con cualquier carácter no reconocido. | `ERROR_LEXICO` |
 
----
 
 # Lógica del Desafío
-# Instrucciones de Uso
-# Resultados de Prueba
-```
-Analizando expresión: "2.5 + -3 * (-10.5) / (5 - 3)"
-(NUMERO_DECIMAL, 2.5)
-(OP_BINARIO_SUMA, +)
-(OP_UNARIO_NEG, -)
-(NUMERO_ENTERO, 3)
-(OP_MULT, *)
-(PAREN_ABRE, ()
-(OP_UNARIO_NEG, -)
-(NUMERO_DECIMAL, 10.5)
-(PAREN_CIERRA, ))
-(OP_DIV, /)
-(PAREN_ABRE, ()
-(NUMERO_ENTERO, 5)
-(OP_BINARIO_RESTA, -)
-(NUMERO_ENTERO, 3)
-(PAREN_CIERRA, ))
-(FIN_CADENA, EOF)
+
+El desafío clave del proyecto fue resolver la ambigüedad entre el **Operador Binario de Resta** (`OP_BINARIO_RESTA`) y el **Operador Unario Negativo** (`OP_UNARIO_NEG`).
+La solución implementada se basa en el **contexto** del token previamente reconocido (`token_anterior`).
+
+
+### **Reglas de Clasificación para el Signo Menos (`-`):**
+* **Negación Unaria (`OP_UNARIO_NEG`):** El símbolo `-` se clasifica como **negación** si el token anterior (`token_anterior`):
+    * Es un operador binario (`+`, `*`, `/`).
+    * Es un paréntesis de apertura (`(`).
+    * O, si es el inicio de la expresión.
+
+* **Resta Binaria (`OP_BINARIO_RESTA`):** El símbolo `-` se clasifica como **resta** si el token anterior (`token_anterior`):
+    * Fue un número (`NUMERO_ENTERO`, `NUMERO_DECIMAL`).
+    * Fue un paréntesis de cierre (`)`).
+
+El siguiente extracto de código muestra la lógica de decisión en el estado inicial para el símbolo menos:
 ```
 
+...
+} else if (c == '-') {
+                    if (token_anterior == TOKEN_INICIO || 
+                        token_anterior == OP_BINARIO_SUMA || 
+                        token_anterior == OP_BINARIO_RESTA || 
+                        token_anterior == OP_MULT || 
+                        token_anterior == OP_DIV || 
+                        token_anterior == PAREN_ABRE) {
+                        
+                        nuevo_token.tipo = OP_UNARIO_NEG;
+                    } else {
+                        nuevo_token.tipo = OP_BINARIO_RESTA;
+                    }
+                    (*indice)++;
+...
 ```
-Analizando expresión: "5$ + 1 + 4.1.2"
-(NUMERO_ENTERO, 5)
-(ERROR_LEXICO, $)
-(OP_BINARIO_SUMA, +)
-(NUMERO_ENTERO, 1)
-(OP_BINARIO_SUMA, +)
-(NUMERO_DECIMAL, 4.1)
-(ERROR_LEXICO, .)
-(NUMERO_ENTERO, 2)
-(FIN_CADENA, EOF)
+
+
+
+
+# Instrucciones de Uso
+
+Para compilar y ejecutar el Analizador Léxico, siga los siguientes pasos:
+
+### 🛠️ Requisitos
+* **Compilador C:** Se requiere un compilador C compatible con la sintaxis ANSI C (ej. `gcc`).
+* **Archivos:** `project_code.c` y `input.txt`.
+
+### 1. Preparar el Archivo de Entrada (`input.txt`)
+
+El programa espera que las expresiones aritméticas a analizar se encuentren en un archivo llamado **`input.txt`** en el mismo directorio.
+
+> **Nota:** Cada expresión debe estar en una **nueva línea**. El analizador procesará línea por línea.
+>
+> **Ejemplo de contenido para `input.txt`:**
+> ```
+> 2.5+-3*(-10.5)/(5-3)
+> 10.5 + 2 - (3 * 4)
+> 5$*1+4.1.2
+> ```
+
+### 2. Compilar el Código Fuente
+
+Use su compilador C para generar el ejecutable. Si utiliza `gcc` en Linux/macOS o Windows:
+
+```bash
+gcc project_code.c -o analizador
 ```
+
+# Resultados de Prueba
+```
+ Expresion : 2.5 + -3 * ( -10.5) / (5 - 3)
+
+ --------------- -------
+ TOKEN           LEXEMA
+ --------------- -------
+ NUMERO_DECIMAL    2.5
+ OP_BINARIO_SUMA   +
+ OP_UNARIO_NEG     -
+ NUMERO_ENTERO     3
+ OP_MULT           *
+ PAREN_ABRE        (
+ OP_UNARIO_NEG     -
+ NUMERO_DECIMAL    10.5
+ PAREN_CIERRA      )
+ OP_DIV            /
+ PAREN_ABRE        (
+ NUMERO_ENTERO     5
+ OP_BINARIO_RESTA  -
+ NUMERO_ENTERO     3
+ PAREN_CIERRA      )
+ FIN_CADENA         EOF
+
+ Expresion : 5 + 1 + 4.1
+ --------------- -------
+ TOKEN           LEXEMA
+ --------------- -------
+ NUMERO_ENTERO 5
+ OP_BINARIO_SUMA +
+ NUMERO_ENTERO 1
+ OP_BINARIO_SUMA +
+ NUMERO_DECIMAL 4.1
+ FIN_CADENA EOF
+
+```
+
+
 ## Bibliografia
 - https://doi.org/10.37376/asj.vi3.953 Modelo AFD
 - https://www.ijariit.com/manuscripts/v8i1/V8I1-1238.pdf Modelo AFD
