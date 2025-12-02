@@ -147,23 +147,34 @@ El siguiente extracto de código muestra la lógica de decisión en el estado in
 ...
 ```
 
-
-
-
 # Instrucciones de Uso
 
-Para compilar y ejecutar el Analizador Léxico, siga los siguientes pasos:
+Para compilar y ejecutar el Analizador Léxico, siga los siguientes pasos. El primer paso es **clonar el repositorio** para obtener todos los archivos fuente necesarios.
 
-### 🛠️ Requisitos
+### Requisitos
+* **Sistema de control de versiones:** Se requiere **Git** para clonar el repositorio.
 * **Compilador C:** Se requiere un compilador C compatible con la sintaxis ANSI C (ej. `gcc`).
-* **Archivos:** `project_code.c` y `input.txt`.
+* **Entorno:** Una terminal o línea de comandos (CMD/PowerShell en Windows, Terminal en Linux/macOS).
 
-### 1. Preparar el Archivo de Entrada (`input.txt`)
+---
 
-El programa espera que las expresiones aritméticas a analizar se encuentren en un archivo llamado **`input.txt`** en el mismo directorio.
+### 1. Clonar el Repositorio
 
-> **Nota:** Cada expresión debe estar en una **nueva línea**. El analizador procesará línea por línea.
->
+Abra su terminal o línea de comandos y ejecute el siguiente comando para descargar el proyecto:
+
+```bash
+git clone https://github.com/manueeel202x/Analizador-Lexico-Avanzado.git
+```
+Luego, navegue hasta el directorio del proyecto:
+```bash
+cd Analizador-Lexico-Avanzado
+```
+
+### 2. Preparar el Archivo de Entrada (`input.txt`)
+
+El repositorio ya incluye el archivo **`input.txt`** con expresiones de prueba.
+
+> **Nota:** Puede editar este archivo a su gusto. Asegúrese de que cada expresión esté en una **nueva línea**. El analizador procesará el archivo línea por línea.
 > **Ejemplo de contenido para `input.txt`:**
 > ```
 > 2.5+-3*(-10.5)/(5-3)
@@ -171,17 +182,17 @@ El programa espera que las expresiones aritméticas a analizar se encuentren en 
 > 5$*1+4.1.2
 > ```
 
-### 2. Compilar el Código Fuente
+
+### 3. Compilar el Código Fuente
 
 Use su compilador C para generar el ejecutable. Si utiliza `gcc` en Linux/macOS o Windows:
 
 ```bash
 gcc project_code.c -o analizador
 ```
-
 # Resultados de Prueba
 ```
- Expresion : 2.5 + -3 * ( -10.5) / (5 - 3)
+ Expresion 1 : 2.5 + -3 * ( -10.5) / (5 - 3)
 
  --------------- -------
  TOKEN           LEXEMA
@@ -203,21 +214,39 @@ gcc project_code.c -o analizador
  PAREN_CIERRA      )
  FIN_CADENA         EOF
 
- Expresion : 5 + 1 + 4.1
+ Expresion 2 : 5 + 1 + 4.1
  --------------- -------
  TOKEN           LEXEMA
  --------------- -------
- NUMERO_ENTERO 5
+ NUMERO_ENTERO   5
  OP_BINARIO_SUMA +
- NUMERO_ENTERO 1
+ NUMERO_ENTERO   1
  OP_BINARIO_SUMA +
- NUMERO_DECIMAL 4.1
- FIN_CADENA EOF
+ NUMERO_DECIMAL  4.1
+ FIN_CADENA      EOF
 
 ```
 
+## Interpretación de los Resultados de Prueba
+
+**Análisis de la Expresión 1: `2.5 + -3 * ( -10.5) / (5 - 3)`**
+
+* **Detección de Tipos de Números:**
+    * `2.5` se clasifica correctamente como `NUMERO_DECIMAL`.
+    * `3` se clasifica como `NUMERO_ENTERO`.
+    * `10.5` se clasifica como `NUMERO_DECIMAL`. Esto demuestra que se está manejando correctamente la transición del dígito al punto y de vuelta al dígito para formar decimales.
+
+* **Manejo de la Ambigüedad del Signo Menos:**
+    * **`-3`:** El signo `-` está precedido por un operador binario. Por la regla definida en la "Lógica del Desafío", se clasifica como `OP_UNARIO_NEG`.
+    * **`(-10.5)`:** El signo `-` está precedido por un paréntesis de apertura. Por la regla definida, se clasifica como `OP_UNARIO_NEG`.
+    * **`5 - 3`:** El signo `-` está precedido por un número. Por la regla definida, se clasifica como `OP_BINARIO_RESTA`.
+
+El análisis demuestra que el analizador ha logrado transformar la cadena de entrada en una secuencia de **tokens** con su **lexema** y **tipo** asociado, superando el principal desafío del proyecto.
+
+---
+
 ## Bibliografía
-1.  J. R. Smith, D. R. Jones, and M. A. Brown, “A novel approach to lexical analysis using adaptive finite automata,” *International Conference on Programming Tools and Compilers (IPTC)*, 2011, doi: 10.1109/IPTC.2011.33.
-2.  S. Chen and X. Wang, “Efficient Lexer Generation for Modern Programming Languages,” *Global Conference on Artificial Intelligence and Technology (GCAT)*, 2024, doi: 10.1109/GCAT62922.2024.10923959.
-3.  L. K. Patel and A. C. Gandhi, “Context-aware parsing in expression evaluation systems,” *15th International Conference on Machine Learning and Applications (ICMLA)*, 2016, doi: 10.1109/ICMLA.2016.0074.
+1.  J. R. Smith, D. R. Jones, and M. A. Brown, “A novel approach to lexical analysis using adaptive finite automata,” *International Conference on Programming Tools and Compilers (IPTC)*, 2011, doi: https://10.1109/IPTC.2011.33.
+2.  S. Chen and X. Wang, “Efficient Lexer Generation for Modern Programming Languages,” *Global Conference on Artificial Intelligence and Technology (GCAT)*, 2024, doi: https://10.1109/GCAT62922.2024.10923959.
+3.  L. K. Patel and A. C. Gandhi, “Context-aware parsing in expression evaluation systems,” *15th International Conference on Machine Learning and Applications (ICMLA)*, 2016, doi: https://10.1109/ICMLA.2016.0074.
 
